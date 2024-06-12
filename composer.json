@@ -1,0 +1,13 @@
+{
+    "require": {
+        "php": ">=7.4",
+        "firebase/php-jwt": "^5.2",
+        "ramsey/uuid": "^4.2",
+        "brick/math": "^0.9"
+    },
+    "config": {
+        "platform": {
+            "php": "7.4.0"
+        }
+    }
+}
