@@ -1,0 +1,46 @@
+<div class="content-column one_half"><div style="padding:0;">[text* your-firstname autocomplete:name placeholder "Etunimi*"]</div></div>
+<div class="content-column one_half last_column">[text* your-lastname autocomplete:name placeholder "Sukunimi*"]</div><div class="clear_column"></div>
+
+<div class="content-column one_half"><div style="padding:0;">[email* your-email autocomplete:email placeholder "Sähköpostiosoite*"]</div></div>
+<div class="content-column one_half last_column">[tel* your-tel autocomplete:tel placeholder "Puhelinnumero*"]</div><div class="clear_column"></div>
+
+<div class="content-column one_half"><div style="padding:0;">[text* your-address autocomplete:address placeholder "Katuosoite*"]</div></div>
+<div class="content-column one_half last_column">[text* your-city autocomplete:address-level2 placeholder "Postitoimipaikka*"]</div><div class="clear_column"></div>
+
+<div class="content-column single_div">
+    <div>
+        [textarea your-message placeholder "Vapaa hakemus"]
+    </div>
+</div>
+
+<div class="content-column one_third">
+    <div style="padding:0;">
+        <p class="form-file-p">CV</p>
+        <div class="custom-file-input">
+            [file your-cv id:your-cv class:file-input filetypes:doc|docx|pdf]
+            <label for="your-cv" class="custom-file-label">Lisää CV</label>
+        </div>
+    </div>
+</div>
+<div class="content-column one_third">
+    <div style="padding:0;">
+        <p class="form-file-p">Hakemus</p>
+        <div class="custom-file-input">
+            [file your-application id:your-application class:file-input filetypes:doc|docx|pdf]
+            <label for="your-application" class="custom-file-label">Lisää hakemuskirje</label>
+        </div>
+    </div>
+</div>
+<div class="content-column one_third last_column">
+    <div style="padding:0;">
+        <p class="form-file-p">Kuva</p>
+        <div class="custom-file-input">
+            [file your-photo id:your-photo class:file-input filetypes:jpg|jpeg|png|gif]
+            <label for="your-photo" class="custom-file-label">Lisää kuva</label>
+        </div>
+    </div>
+</div>
+
+[hidden advert-id]
+
+[submit "Lähetä"]

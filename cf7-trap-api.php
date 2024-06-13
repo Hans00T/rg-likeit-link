@@ -237,6 +237,11 @@ function cf7_data( $form_data ) {
         'Modified' => get_current_time_iso8601(),
     ];
 
+    /** Add the rest of the fields (the file fields) conditionally to not cause API request failure.
+     *  This is because the API will not accept empty fields even if the fields are otherwise 
+     *  valid and recognized by the interface and not required. 
+     *  In a nutshell: if there is nothing to send, do not send the field at all.
+     */
     // Conditionally add the Photo field
     if (isset($form_data['your-photocfdb7_file']) && !empty($form_data['your-photocfdb7_file'])) {
         $photo_filepath = $cfdb7_dirname . '/' . basename($form_data['your-photocfdb7_file']);
@@ -283,7 +288,8 @@ function cf7_data( $form_data ) {
     // Decoding json resp
     $responseData = json_decode($response, true);
 
-    // Check for a successful response before deleting files
+    // Check for a successful response before deleting files. This deletes the files from wordpress
+    // which helps to avoid filling up the server with data that has been already forwarded to API.
     if (isset($responseData['Status']) && $responseData['Status'] === 'Success') {
         // Delete the uploaded files if they exist
         if ($photo_filepath && file_exists($photo_filepath)) {
