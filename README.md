@@ -8,11 +8,8 @@ This project is a plugin made specifically to be used with WordPress to forward 
 - <strong>PHP version 7.4</strong>
 - WordPress site
 - Required plugins: <strong>Contact Form 7, Contact Form CFDB7, WPCode Lite</strong>
-- Contact Form 7 base form (<strong>NOTE:</strong> DO NOT change the names of the fields): <code>/required code snippets/tyonhaku-shortcode</code>
-- <strong>NOTE:</strong> remember to include <code>skip_mail: on</code> in the Additional settings (lisäasetukset) section/tab of your form. Otherwise an email will be sent.
-- In WPCode Lite add these two JavaScript code snippets: <code>/required code snippets/apply-button-functionality.js</code> & <code>/required code snippets/update-file-input-labels.js</code>
-- In the custom css of the WordPress site add the code from 
 - Optional plugins (these are not necessarily required but further improve the user experience): Column Shortcodes, Popup Maker
+- <strong>IMPORTANT NOTE:</strong> When creating your contact form do not name it anything other than <code>Tyonhakulomake</code>.
 - Required Environmental Variables:  
 ```
 LIKEIT_KEY= <Your Likeit API key>
@@ -26,3 +23,17 @@ The variables above are not included in this repository for security reasons.
 - This plugin is not to be used in any other use case than forwarding Rekry Group job application data from Wordpress to Likeit. Likeit API differs from company to company and therefore this solution cannot be used to link form submission to other APIs.
 
 ## Usage
+### Installation
+1. In the wp-config.php file of your site add the environmental constant variables mentioned before (LIKEIT_KEY, LIKEIT_URL, PATH_START). The wp-config.php file should be located in a folder called public or public_html (cPanel). An example of defining a variable in the wp-config.php file:  
+```
+define( 'name_goes_here', 'value_goes_here' );
+```
+2. Go to <code>public/wp-content/plugins</code> folder and create a new folder called cf7-trap-api.
+3. In this new cf7-trap-api folder copy and paste the <code>cf7-trap-api.php</code>, <code>composer.json</code>, <code>composer.lock</code> and the <code>vendor</code> directory located in this repository.
+4. Now you can see a plugin called CF7 Form Trap installed in your plugins on the website. Activate it if it is not activated by default.
+
+### Configuration
+- Contact Form 7 base form (<strong>NOTE:</strong> DO NOT change the names of the fields): <code>/required code snippets/tyonhaku-shortcode</code>
+- <strong>NOTE:</strong> remember to include <code>skip_mail: on</code> in the Additional settings (lisäasetukset) section/tab of your form. Otherwise an email will be sent.
+- In WPCode Lite add these two JavaScript code snippets: <code>/required code snippets/apply-button-functionality.js</code> & <code>/required code snippets/update-file-input-labels.js</code>
+- In the custom css of the WordPress site add the code from <code>/required code snippets/page-custom-css.css</code>
