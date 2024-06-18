@@ -35,7 +35,7 @@
     <div style="padding:0;">
         <p class="form-file-p">Kuva</p>
         <div class="custom-file-input">
-            [file your-photo id:your-photo class:file-input filetypes:jpg|jpeg|png|gif]
+            [file your-photo id:your-photo class:file-input accept:image/* capture filetypes:jpg|jpeg|png]
             <label for="your-photo" class="custom-file-label">Lisää kuva</label>
         </div>
     </div>

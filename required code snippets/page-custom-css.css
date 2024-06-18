@@ -1,0 +1,80 @@
+/* Style for input fields in application form */
+.wpcf7 input[type="text"],
+.wpcf7 input[type="email"],
+.wpcf7 input[type="tel"] {
+  height: 48px;
+	font-family: "Barlow Condensed";
+	margin-bottom:10px;
+}
+.wpcf7 textarea {
+  height: 150px;
+	max-width: 100%; /* user can't widen the textarea past the popup */
+	min-width: 100%;
+	margin-bottom: -20px;
+}
+/* Style for form submit button */
+.wpcf7 input[type="submit"] {
+	border-radius: 25px;
+	padding: 8px 25px;
+	background-color: #dd1f77;
+	color: #ffffff;
+	height: 48px;
+	text-transform: uppercase;
+  letter-spacing: 0.05em;
+	font-family: "Barlow Condensed";
+  font-size: 20px;
+}
+
+.content-column.one_half{
+	padding-right: 10px;
+	margin-bottom: -20px;
+}
+.content-column.one_third{
+	padding-right: 10px;
+	margin-bottom: 20px;
+}
+.content-column.single_div{
+	padding-right: 10px;
+}
+
+/* Style for file input buttons in application form */
+.custom-file-input {
+  position: relative;
+  display: inline-block;
+}
+
+.custom-file-input input[type="file"] {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: 0;
+  padding: 0;
+  cursor: pointer;
+  opacity: 0;
+  height: 100%;
+  width: 100%;
+	margin-top: -20px;
+}
+
+.custom-file-label {
+	background-color: #09216d;
+	border-radius: 25px;
+	padding: 8px 25px;
+	color: #ffffff;
+	height: 48px;
+	text-transform: uppercase;
+  letter-spacing: 0.05em;
+	font-family: "Barlow Condensed";
+  font-size: 20px;
+	font-weight:normal !important;
+	white-space: nowrap;
+	cursor: pointer;
+}
+
+.form-file-p {
+	font-size: 24px;
+	color: #092449;
+	margin-top: 0px;
+	margin-bottom: -15px;
+	margin-left: 5px;
+}

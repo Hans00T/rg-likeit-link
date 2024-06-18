@@ -11,6 +11,7 @@ This project is a plugin made specifically to be used with WordPress to forward 
 - Contact Form 7 base form (<strong>NOTE:</strong> DO NOT change the names of the fields): <code>/required code snippets/tyonhaku-shortcode</code>
 - <strong>NOTE:</strong> remember to include <code>skip_mail: on</code> in the Additional settings (lisäasetukset) section/tab of your form. Otherwise an email will be sent.
 - In WPCode Lite add these two JavaScript code snippets: <code>/required code snippets/apply-button-functionality.js</code> & <code>/required code snippets/update-file-input-labels.js</code>
+- In the custom css of the WordPress site add the code from 
 - Optional plugins (these are not necessarily required but further improve the user experience): Column Shortcodes, Popup Maker
 - Required Environmental Variables:  
 ```
