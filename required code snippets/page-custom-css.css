@@ -37,6 +37,7 @@
 	padding-right: 10px;
 }
 
+
 /* Style for file input buttons in application form */
 .custom-file-input {
   position: relative;
@@ -77,4 +78,20 @@
 	margin-top: 0px;
 	margin-bottom: -15px;
 	margin-left: 5px;
+}
+
+/* Change font size of the acceptance checkbox label */
+.wpcf7-form-control.wpcf7-acceptance {
+    font-size: 18px; /* Adjust the font size as needed */
+}
+
+/* Change font size of the link within the acceptance label */
+.wpcf7-form-control.wpcf7-acceptance a {
+    font-size: 18px; /* Adjust the font size as needed */
+    color: #dd1f77; /* Adjust the color as needed */
+}
+/* adjust form checkbox */
+.wpcf7-form-control.wpcf7-acceptance input[type="checkbox"] {
+    transform: scale(1.5);
+    margin-right: 5px;
 }
