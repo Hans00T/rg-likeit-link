@@ -177,6 +177,7 @@ function get_cfdb7_uploads_path() {
 }
 
 add_action( 'cfdb7_before_save', 'cf7_data' ); // run cf7_data() -method when "before_save" action happens
+add_action('cfdb7_after_save_data', 'handle_after_save', 10, 1); // run handle_after_save() after data is saved
 
 /* This is the function that receives the submitted forms and then 
    prepares the data received from them to be sent to the Likeit API. 
@@ -184,10 +185,15 @@ add_action( 'cfdb7_before_save', 'cf7_data' ); // run cf7_data() -method when "b
    It only catches the data from form before submission and
    then calls another function (likeit_api_put) with the received data as params */
 function cf7_data( $form_data ) {
-    global $api_base_url, $api_secret, $api_user, $path_start;
+    global $api_base_url, $api_secret, $api_user, $path_start, $wpdb, $likeit_api_response_status, $cfdb7_form_data;
     $photo_filepath = null;
     $application_filepath = null;
     $cv_filepath = null;
+    
+    // Get the form ID
+    /*
+    $form_id = $cf7->id();
+    error_log("Form id: " . $form_id); */
 
     // store the submitted email value in a variable
     $email = isset($form_data['your-email']) ? $form_data['your-email'] : '';
@@ -237,11 +243,6 @@ function cf7_data( $form_data ) {
         'Modified' => get_current_time_iso8601(),
     ];
 
-    /** Add the rest of the fields (the file fields) conditionally to not cause API request failure.
-     *  This is because the API will not accept empty fields even if the fields are otherwise 
-     *  valid and recognized by the interface and not required. 
-     *  In a nutshell: if there is nothing to send, do not send the field at all.
-     */
     // Conditionally add the Photo field
     if (isset($form_data['your-photocfdb7_file']) && !empty($form_data['your-photocfdb7_file'])) {
         $photo_filepath = $cfdb7_dirname . '/' . basename($form_data['your-photocfdb7_file']);
@@ -288,9 +289,12 @@ function cf7_data( $form_data ) {
     // Decoding json resp
     $responseData = json_decode($response, true);
 
-    // Check for a successful response before deleting files. This deletes the files from wordpress
-    // which helps to avoid filling up the server with data that has been already forwarded to API.
+    // Store the resp status in a global variable
+    $likeit_api_response_status = isset($responseData['Status']) ? $responseData['Status'] : 'Failed';
+
+    // Check for a successful response before deleting files
     if (isset($responseData['Status']) && $responseData['Status'] === 'Success') {
+        unset($data); // remove data after forwarding to API
         // Delete the uploaded files if they exist
         if ($photo_filepath && file_exists($photo_filepath)) {
             unlink($photo_filepath);
@@ -305,4 +309,22 @@ function cf7_data( $form_data ) {
         error_log('API request failed, not deleting uploaded files.');
     }
 }
+
+/* This function handles the logic after form data has been saved. 
+   It deletes data from the database after it has been sent to the API as that data is
+   no longer needed by the WordPress website. Data is also deleted for security reasons
+   it is not recommended to store sensitive data when it's no longer needed. */
+function handle_after_save($entry_id) {
+    global $wpdb, $likeit_api_response_status;
+
+    // check if the resp status is success before deleting the created entry
+    if ($likeit_api_response_status === 'Success') {
+        // delete the form entry from the database
+        $table_name = $wpdb->prefix . 'db7_forms';
+        $wpdb->delete($table_name, array('form_id' => $entry_id));
+    } else {
+        error_log('API request failed or response status is not success, not deleting form entry.');
+    }
+}
 ?>
+
