@@ -1,5 +1,6 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function() {  // wrap this into a function that takes popup id as parameter gets called from another code snippet(s) which are used in portfolio items??
     var btnHaePaikkaa = document.querySelector("a.avia-button.avia-size-x-large");
+    var btnHaePaikkaaTitle = document.querySelector("span.avia_iconbox_title");
     if (btnHaePaikkaa) {
         /* otetaan napin linkki talteen. Linkki viittaa Likeit:n työnhakuilmoitukseen, ja se sisältää työpaikkailmoituksen ID-arvon, 
         * jota puolestaan tarvitaan, jotta tiedetään, mihin työpaikkailmoitukseen hakemus on lähetetty

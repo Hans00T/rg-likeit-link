@@ -1,8 +1,10 @@
 <?php
 /**
- * Plugin Name: CF7 Form Trap
+ * Plugin Name: CF7 Form Trap - Rekry Group
+ * Plugin URI: https://github.com/tyoharjoittelija/rg-likeit-link
  * Author: Harjoittelija, Rekry Group Oy
  * Description: A custom plugin for handling job application form data from Wordpress and forwards it to Likeit API.
+ * Version: 1.1.0
  */
 
 defined('ABSPATH') or die('Unauthorized access!');
@@ -11,17 +13,17 @@ require __DIR__ . '/vendor/autoload.php';   // Include the Composer autoload fil
 use Ramsey\Uuid\Uuid;                       // Import the UUID library
 use Firebase\JWT\JWT;                       // Import JWT library
 
-// get likeit_key
+// check likeit_key
 if (!defined('LIKEIT_KEY')) {
     error_log('API key not defined in configuration');
     return;
 }
-// get likeit_url
+// check likeit_url
 if (!defined('LIKEIT_URL')) {
     error_log('API url not defined in configuration');
     return;
 }
-// get the first path of the url
+// check the first path of the url
 if (!defined('PATH_START')) {
     error_log('API path start not defined in configuration');
     return;
@@ -33,7 +35,7 @@ $path_start = PATH_START;
 $api_user = explode('-', $api_secret)[0];   // First part of Api Key
 
 /** This function generates encoded jwt tokens for request headers */
-function generate_jwt_token($path, $method, $queryStr, $uri) {
+function generate_jwt_token($path, $method, $queryStr, $uri) {  // y is the $uri there tho?
     global $api_secret, $api_user;
     
     $payload = array(
@@ -56,7 +58,7 @@ function set_header($jwt, $content_type = null) {
     $headers = [ 'Authorization: Bearer ' . $jwt ];
 
     if ($content_type) {
-        $headers['Content-Type'] = $content_type;
+        $headers[] = 'Content-Type: ' . $content_type; // add content type if given (in PUT requests. GET requests don't need one)
     }
 
     return $headers;
@@ -76,7 +78,7 @@ function likeit_api_put($path, $data) {
     $headers = set_header($jwt);
 
     // JSON encode the data
-    $json_data = json_encode($data);
+    $json_data = json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
 
     // Initialize cURL
     $ch = curl_init($api_base_url . $path);
@@ -167,7 +169,7 @@ function get_current_time_iso8601() {
 }
 
 function get_cfdb7_uploads_path() {
-    // Get the uploads directory data
+    // Get the uploads directory
     $upload_dir = wp_upload_dir();
 
     // Construct the path to the cfdb7_uploads directory
@@ -189,14 +191,14 @@ function cf7_data( $form_data ) {
     $photo_filepath = null;
     $application_filepath = null;
     $cv_filepath = null;
-    
-    // Get the form ID
-    /*
-    $form_id = $cf7->id();
-    error_log("Form id: " . $form_id); */
 
-    // store the submitted email value in a variable
-    $email = isset($form_data['your-email']) ? $form_data['your-email'] : '';
+    // Sanitize form data
+    $form_name = sanitize_text_field($form_data['form-name'] ?? '');
+    $email = sanitize_email($form_data['your-email'] ?? '');
+    $advert_id = sanitize_text_field($form_data['advert-id'] ?? '');
+
+    //error_log("form_name: " . $form_name . " email: " . $email . " advert_id: " . $advert_id);
+
     $existingApplicant = check_applicant_exists($email); // check if the applicant already exists in the system
 
     // if an applicant is found, we use the existing applicant's id. Otherwise id = 0
@@ -209,36 +211,35 @@ function cf7_data( $form_data ) {
         $applicantCreated = get_current_time_iso8601();
     }
 
-    $path = $path_start . '/adverts' . '/' . $form_data['advert-id'] . '/applicants';
+    $path = $path_start . '/adverts' . '/' . $advert_id . '/applicants';
 
     // finds location for log file and names the log file
-    $upload_dir = wp_upload_dir();
     $cfdb7_dirname = get_cfdb7_uploads_path();
     $log_file = $cfdb7_dirname . '/cf7_data_log.txt';
 
-    // Construct file paths
-    if (isset($form_data['your-photocfdb7_file']) && !empty($form_data['your-photocfdb7_file'])) {
-        $photo_filepath = $cfdb7_dirname . '/' . basename($form_data['your-photocfdb7_file']);
+    // Construct file paths and sanitize filenames
+    if (!empty($form_data['your-photocfdb7_file'])) {
+        $photo_filepath = $cfdb7_dirname . '/' . basename(sanitize_file_name($form_data['your-photocfdb7_file']));
     }
-    if (isset($form_data['your-applicationcfdb7_file']) && !empty($form_data['your-applicationcfdb7_file'])) {
-        $application_filepath = $cfdb7_dirname . '/' . basename($form_data['your-applicationcfdb7_file']);
+    if (!empty($form_data['your-applicationcfdb7_file'])) {
+        $application_filepath = $cfdb7_dirname . '/' . basename(sanitize_file_name($form_data['your-applicationcfdb7_file']));
     }
-    if (isset($form_data['your-cvcfdb7_file']) && !empty($form_data['your-cvcfdb7_file'])) {
-        $cv_filepath = $cfdb7_dirname . '/' . basename($form_data['your-cvcfdb7_file']);
+    if (!empty($form_data['your-cvcfdb7_file'])) {
+        $cv_filepath = $cfdb7_dirname . '/' . basename(sanitize_file_name($form_data['your-cvcfdb7_file']));
     }
 
-    // extract data from form submission
+    // extract data from form submission and prepare & sanitize it for API
     $data = [
         'Id'=> $applicantId,
-        'FirstName' => isset($form_data['your-firstname']) ? $form_data['your-firstname'] : '',
-        'LastName' => isset($form_data['your-lastname']) ? $form_data['your-lastname'] : '',
+        'FirstName' => sanitize_text_field($form_data['your-firstname'] ?? ''),
+        'LastName' => sanitize_text_field($form_data['your-lastname'] ?? ''),
         'Email' => $email,
-        'MobileNumber' => isset($form_data['your-tel']) ? $form_data['your-tel'] : '',
-        'Address' => isset($form_data['your-address']) ? $form_data['your-address'] : '',
-        'City' => isset($form_data['your-city']) ? $form_data['your-city'] : '',
-        'Application' => isset($form_data['your-message']) ? $form_data['your-message'] : '',
+        'MobileNumber' => sanitize_text_field($form_data['your-tel'] ?? ''),
+        'Address' => sanitize_text_field($form_data['your-address'] ?? ''),
+        'City' => sanitize_text_field($form_data['your-city'] ?? ''),
+        'Application' => sanitize_textarea_field($form_data['your-message'] ?? ''),
         'IsActive' => true,
-        'Name' => isset($form_data['your-firstname']) && isset($form_data['your-lastname']) ? $form_data['your-lastname'] . ', ' . $form_data['your-firstname'] : '',
+        'Name' => sanitize_text_field($form_data['your-lastname'] ?? '') . ', ' . sanitize_text_field($form_data['your-firstname'] ?? ''),
         'Created' => $applicantCreated,
         'Modified' => get_current_time_iso8601(),
     ];
