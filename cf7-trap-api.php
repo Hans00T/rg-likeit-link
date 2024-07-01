@@ -3,7 +3,7 @@
  * Plugin Name: CF7 Form Trap - Rekry Group
  * Plugin URI: https://github.com/tyoharjoittelija/rg-likeit-link
  * Author: Harjoittelija, Rekry Group Oy
- * Description: A custom plugin for handling job application form data from Wordpress and forwards it to Likeit API.
+ * Description: A custom plugin for handling job application form data from Wordpress and forwards it to LikeIT API securely.
  * Version: 1.1.0
  */
 
@@ -328,4 +328,3 @@ function handle_after_save($entry_id) {
     }
 }
 ?>
-
