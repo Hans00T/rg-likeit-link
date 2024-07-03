@@ -106,3 +106,5 @@
 	padding-left: 8px;
 	padding-right: 8px;
 }
+/* Hide reCaptcha badge */
+.grecaptcha-badge { visibility: hidden; }
