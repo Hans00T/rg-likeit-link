@@ -90,8 +90,19 @@
     font-size: 18px; /* Adjust the font size as needed */
     color: #dd1f77; /* Adjust the color as needed */
 }
-/* adjust form checkbox */
+
+/* Optional: Adjust the checkbox itself if needed */
 .wpcf7-form-control.wpcf7-acceptance input[type="checkbox"] {
-    transform: scale(1.5);
-    margin-right: 5px;
+    transform: scale(1.5); /* Adjust the scale as needed */
+    margin-right: 5px; /* Optional: add some space between the checkbox and the label */
+}
+.linkDiv {
+	font-size: 20px;
+	padding-bottom: 10px;
+}
+.langLink {
+	color: #dd1f77;
+	font-weight: bold;
+	padding-left: 8px;
+	padding-right: 8px;
 }
