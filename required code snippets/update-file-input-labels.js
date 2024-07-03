@@ -12,37 +12,41 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (input.files.length > 0) {
                     label.textContent = input.files[0].name;
                 } else {
-                    // Resetoi label elementit, kun tiedostoa ei olla valittu
-                    label.textContent = 'Lisää ' + label.htmlFor.replace('your-', '').replace('-', ' ');
+                    // Reset the label elements when no file is selected
+                    const originalLabel = label.getAttribute('data-original-label');
+                    label.textContent = originalLabel;
                 }
             });
         });
     }
-	
-	// funktio, jolla palautettaan formin filunappien tekstit takaisin alkuperäisiksi.
-	function resetFileLabels() {
+
+    // Function to reset form file button texts back to original
+    function resetFileLabels() {
         const labels = document.querySelectorAll('.custom-file-label');
         labels.forEach(label => {
             const inputId = label.htmlFor;
-            if (inputId === 'your-cv') {
-                label.textContent = 'Lisää CV';
-            } else if (inputId === 'your-application') {
-                label.textContent = 'Lisää hakemuskirje';
-            } else if (inputId === 'your-photo') {
-                label.textContent = 'Lisää kuva';
+            if (inputId === 'your-cv' || inputId === 'your-cv-eng') {
+                label.textContent = inputId === 'your-cv' ? 'Lisää CV' : 'Add a resume';
+            } else if (inputId === 'your-application' || inputId === 'your-application-eng') {
+                label.textContent = inputId === 'your-application' ? 'Lisää hakemuskirje' : 'Add a cover letter';
+            } else if (inputId === 'your-photo' || inputId === 'your-photo-eng') {
+                label.textContent = inputId === 'your-photo' ? 'Lisää kuva' : 'Add your photo';
             }
+            // Save the original label text for resetting later
+            label.setAttribute('data-original-label', label.textContent);
         });
     }
 
-    // Kutsutaan funktiota jo kerran sivun ladattua
+    // Call the function once the page loads
     updateFileLabels();
+    resetFileLabels();
 
-    // Kuuntelee popup eventtejä, minkä perusteella kutsuu updateFileLabels() funktiota
+    // Listen for popup events and call updateFileLabels() accordingly
     document.addEventListener('pumAfterOpen', function(event) {
         updateFileLabels();
     });
-	
-	// Kuuntelee, milloin formi on lähetetty onnistuneesti ja palauttaa nappien tekstit
+
+    // Listen for form submission and reset button texts
     document.addEventListener('wpcf7mailsent', function(event) {
         resetFileLabels();
     });

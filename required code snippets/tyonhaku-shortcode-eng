@@ -1,0 +1,54 @@
+<h2 style="color:#dd1f77">Apply</h2>
+<div class="content-column one_half"><div style="padding:0;">[text* your-firstname-eng autocomplete:name placeholder "First name*"]</div></div>
+<div class="content-column one_half last_column">[text* your-lastname-eng autocomplete:name placeholder "Last name*"]</div><div class="clear_column"></div>
+
+<div class="content-column one_half"><div style="padding:0;">[email* your-email-eng autocomplete:email placeholder "Email*"]</div></div>
+<div class="content-column one_half last_column">[tel* your-tel-eng autocomplete:tel placeholder "Phone*"]</div><div class="clear_column"></div>
+
+<div class="content-column one_half"><div style="padding:0;">[text* your-address-eng autocomplete:address placeholder "Street address*"]</div></div>
+<div class="content-column one_half last_column">[text* your-city-eng autocomplete:address-level2 placeholder "City*"]</div><div class="clear_column"></div>
+
+<div class="content-column single_div">
+    <div>
+        [textarea your-message-eng placeholder "Message"]
+    </div>
+</div>
+
+<div class="content-column one_third">
+    <div style="padding:0;">
+        <p class="form-file-p">Resume</p>
+        <div class="custom-file-input">
+            [file your-cv-eng id:your-cv-eng class:file-input filetypes:doc|docx|pdf]
+            <label for="your-cv-eng" class="custom-file-label">Add a resume</label>
+        </div>
+    </div>
+</div>
+<div class="content-column one_third">
+    <div style="padding:0;">
+        <p class="form-file-p">Cover Letter</p>
+        <div class="custom-file-input">
+            [file your-application-eng id:your-application-eng class:file-input filetypes:doc|docx|pdf]
+            <label for="your-application-eng" class="custom-file-label">Add a cover letter</label>
+        </div>
+    </div>
+</div>
+<div class="content-column one_third last_column">
+    <div style="padding:0;">
+        <p class="form-file-p">Photo</p>
+        <div class="custom-file-input">
+            [file your-photo-eng id:your-photo-eng class:file-input filetypes:jpg|jpeg|png|gif]
+            <label for="your-photo-eng" class="custom-file-label">Add your photo</label>
+        </div>
+    </div>
+</div>
+
+[hidden advert-id-eng]
+[hidden form-name "Tyonhakulomake ENG"]
+
+<label>
+[acceptance privacy-acceptance-eng] <a href="https://rekrygroup.likeit.fi/jsp/duuni/PrivacyPolicy.jsp" onclick="window.open('https://rekrygroup.likeit.fi/jsp/duuni/PrivacyPolicy.jsp', 'ppwin', 'toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=1,width=640,height=480');
+return false;">I accept the privacy policy</a>
+[/acceptance]
+</label>
+
+[submit "Submit"]

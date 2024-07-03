@@ -1,3 +1,4 @@
+<h2 style="color:#dd1f77">Hae paikkaa</h2>
 <div class="content-column one_half"><div style="padding:0;">[text* your-firstname autocomplete:name placeholder "Etunimi*"]</div></div>
 <div class="content-column one_half last_column">[text* your-lastname autocomplete:name placeholder "Sukunimi*"]</div><div class="clear_column"></div>
 
@@ -41,12 +42,13 @@
     </div>
 </div>
 
+[hidden advert-id]
+[hidden form-name "Tyonhakulomake FI"]
+
 <label>
 [acceptance privacy-acceptance] <a href="https://rekrygroup.likeit.fi/jsp/duuni/PrivacyPolicy.jsp" onclick="window.open('https://rekrygroup.likeit.fi/jsp/duuni/PrivacyPolicy.jsp', 'ppwin', 'toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=1,width=640,height=480');
 return false;">Hyväksyn tietosuojaselosteen</a>
 [/acceptance]
 </label>
-
-[hidden advert-id]
 
 [submit "Lähetä"]

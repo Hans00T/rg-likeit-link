@@ -4,7 +4,7 @@
  * Plugin URI: https://github.com/tyoharjoittelija/rg-likeit-link
  * Author: Harjoittelija, Rekry Group Oy
  * Description: A custom plugin for handling job application form data from Wordpress and forwards it to LikeIT API securely.
- * Version: 1.1.0
+ * Version: 1.2.0
  */
 
 defined('ABSPATH') or die('Unauthorized access!');
@@ -192,12 +192,21 @@ function cf7_data( $form_data ) {
     $application_filepath = null;
     $cv_filepath = null;
 
-    // Sanitize form data
     $form_name = sanitize_text_field($form_data['form-name'] ?? '');
-    $email = sanitize_email($form_data['your-email'] ?? '');
-    $advert_id = sanitize_text_field($form_data['advert-id'] ?? '');
 
-    //error_log("form_name: " . $form_name . " email: " . $email . " advert_id: " . $advert_id);
+    // Determine if the form is in Finnish or English
+    $is_finnish_form = $form_name === 'Tyonhakulomake FI';
+    $is_english_form = $form_name === 'Tyonhakulomake ENG';
+
+
+    if ($is_finnish_form) {
+        // Sanitize form data
+        $email = sanitize_email($form_data['your-email'] ?? '');
+        $advert_id = sanitize_text_field($form_data['advert-id'] ?? '');
+    } else {
+        $email = sanitize_email($form_data['your-email-eng'] ?? '');
+        $advert_id = sanitize_text_field($form_data['advert-id-eng'] ?? '');
+    }
 
     $existingApplicant = check_applicant_exists($email); // check if the applicant already exists in the system
 
@@ -218,66 +227,133 @@ function cf7_data( $form_data ) {
     $log_file = $cfdb7_dirname . '/cf7_data_log.txt';
 
     // Construct file paths and sanitize filenames
-    if (!empty($form_data['your-photocfdb7_file'])) {
-        $photo_filepath = $cfdb7_dirname . '/' . basename(sanitize_file_name($form_data['your-photocfdb7_file']));
-    }
-    if (!empty($form_data['your-applicationcfdb7_file'])) {
-        $application_filepath = $cfdb7_dirname . '/' . basename(sanitize_file_name($form_data['your-applicationcfdb7_file']));
-    }
-    if (!empty($form_data['your-cvcfdb7_file'])) {
-        $cv_filepath = $cfdb7_dirname . '/' . basename(sanitize_file_name($form_data['your-cvcfdb7_file']));
-    }
-
-    // extract data from form submission and prepare & sanitize it for API
-    $data = [
-        'Id'=> $applicantId,
-        'FirstName' => sanitize_text_field($form_data['your-firstname'] ?? ''),
-        'LastName' => sanitize_text_field($form_data['your-lastname'] ?? ''),
-        'Email' => $email,
-        'MobileNumber' => sanitize_text_field($form_data['your-tel'] ?? ''),
-        'Address' => sanitize_text_field($form_data['your-address'] ?? ''),
-        'City' => sanitize_text_field($form_data['your-city'] ?? ''),
-        'Application' => sanitize_textarea_field($form_data['your-message'] ?? ''),
-        'IsActive' => true,
-        'Name' => sanitize_text_field($form_data['your-lastname'] ?? '') . ', ' . sanitize_text_field($form_data['your-firstname'] ?? ''),
-        'Created' => $applicantCreated,
-        'Modified' => get_current_time_iso8601(),
-    ];
-
-    // Conditionally add the Photo field
-    if (isset($form_data['your-photocfdb7_file']) && !empty($form_data['your-photocfdb7_file'])) {
-        $photo_filepath = $cfdb7_dirname . '/' . basename($form_data['your-photocfdb7_file']);
-        if (file_exists($photo_filepath)) {
-            $data['Photo'] = [
-                'Name' => basename($form_data['your-photocfdb7_file']),
-                'DataType' => get_mime_type($photo_filepath),
-                'DataSize' => filesize($photo_filepath),
-                'Base64Data' => encode_file_to_base64($photo_filepath)
-            ];
+    if ($is_finnish_form) {
+        if (!empty($form_data['your-photocfdb7_file'])) {
+            $photo_filepath = $cfdb7_dirname . '/' . basename(sanitize_file_name($form_data['your-photocfdb7_file']));
+        }
+        if (!empty($form_data['your-applicationcfdb7_file'])) {
+            $application_filepath = $cfdb7_dirname . '/' . basename(sanitize_file_name($form_data['your-applicationcfdb7_file']));
+        }
+        if (!empty($form_data['your-cvcfdb7_file'])) {
+            $cv_filepath = $cfdb7_dirname . '/' . basename(sanitize_file_name($form_data['your-cvcfdb7_file']));
+        }
+    } else {
+        if (!empty($form_data['your-photo-engcfdb7_file'])) {
+            $photo_filepath = $cfdb7_dirname . '/' . basename(sanitize_file_name($form_data['your-photo-engcfdb7_file']));
+        }
+        if (!empty($form_data['your-application-engcfdb7_file'])) {
+            $application_filepath = $cfdb7_dirname . '/' . basename(sanitize_file_name($form_data['your-application-engcfdb7_file']));
+        }
+        if (!empty($form_data['your-cv-engcfdb7_file'])) {
+            $cv_filepath = $cfdb7_dirname . '/' . basename(sanitize_file_name($form_data['your-cv-engcfdb7_file']));
         }
     }
 
-    // Conditionally add the ApplicationDocument field
-    if (isset($form_data['your-applicationcfdb7_file']) && !empty($form_data['your-applicationcfdb7_file'])) {
-        $application_filepath = $cfdb7_dirname . '/' . basename($form_data['your-applicationcfdb7_file']);
-        if (file_exists($application_filepath)) {
-            $data['ApplicationDocument'] = [
-                'Name' => basename($form_data['your-applicationcfdb7_file']),
-                'DataType' => get_mime_type($application_filepath),
-                'Base64Data' => encode_file_to_base64($application_filepath)
-            ];
-        }
-    }
+    if($is_finnish_form) {
+        // extract data from form submission and prepare & sanitize it for API
+        $data = [
+            'Id'=> $applicantId,
+            'FirstName' => sanitize_text_field($form_data['your-firstname'] ?? ''),
+            'LastName' => sanitize_text_field($form_data['your-lastname'] ?? ''),
+            'Email' => $email,
+            'MobileNumber' => sanitize_text_field($form_data['your-tel'] ?? ''),
+            'Address' => sanitize_text_field($form_data['your-address'] ?? ''),
+            'City' => sanitize_text_field($form_data['your-city'] ?? ''),
+            'Application' => sanitize_textarea_field($form_data['your-message'] ?? ''),
+            'IsActive' => true,
+            'Name' => sanitize_text_field($form_data['your-lastname'] ?? '') . ', ' . sanitize_text_field($form_data['your-firstname'] ?? ''),
+            'Created' => $applicantCreated,
+            'Modified' => get_current_time_iso8601(),
+        ];
 
-    // Conditionally add the CVDocument1 field
-    if (isset($form_data['your-cvcfdb7_file']) && !empty($form_data['your-cvcfdb7_file'])) {
-        $cv_filepath = $cfdb7_dirname . '/' . basename($form_data['your-cvcfdb7_file']);
-        if (file_exists($cv_filepath)) {
-            $data['CVDocument1'] = [
-                'Name' => basename($form_data['your-cvcfdb7_file']),
-                'DataType' => get_mime_type($cv_filepath),
-                'Base64Data' => encode_file_to_base64($cv_filepath)
-            ];
+        // Conditionally add the Photo field
+        if (isset($form_data['your-photocfdb7_file']) && !empty($form_data['your-photocfdb7_file'])) {
+            $photo_filepath = $cfdb7_dirname . '/' . basename($form_data['your-photocfdb7_file']);
+            if (file_exists($photo_filepath)) {
+                $data['Photo'] = [
+                    'Name' => basename($form_data['your-photocfdb7_file']),
+                    'DataType' => get_mime_type($photo_filepath),
+                    'DataSize' => filesize($photo_filepath),
+                    'Base64Data' => encode_file_to_base64($photo_filepath)
+                ];
+            }
+        }
+
+        // Conditionally add the ApplicationDocument field
+        if (isset($form_data['your-applicationcfdb7_file']) && !empty($form_data['your-applicationcfdb7_file'])) {
+            $application_filepath = $cfdb7_dirname . '/' . basename($form_data['your-applicationcfdb7_file']);
+            if (file_exists($application_filepath)) {
+                $data['ApplicationDocument'] = [
+                    'Name' => basename($form_data['your-applicationcfdb7_file']),
+                    'DataType' => get_mime_type($application_filepath),
+                    'Base64Data' => encode_file_to_base64($application_filepath)
+                ];
+            }
+        }
+
+        // Conditionally add the CVDocument1 field
+        if (isset($form_data['your-cvcfdb7_file']) && !empty($form_data['your-cvcfdb7_file'])) {
+            $cv_filepath = $cfdb7_dirname . '/' . basename($form_data['your-cvcfdb7_file']);
+            if (file_exists($cv_filepath)) {
+                $data['CVDocument1'] = [
+                    'Name' => basename($form_data['your-cvcfdb7_file']),
+                    'DataType' => get_mime_type($cv_filepath),
+                    'Base64Data' => encode_file_to_base64($cv_filepath)
+                ];
+            }
+        }
+    } else {
+        // extract data from form submission and prepare & sanitize it for API
+        $data = [
+            'Id'=> $applicantId,
+            'FirstName' => sanitize_text_field($form_data['your-firstname-eng'] ?? ''),
+            'LastName' => sanitize_text_field($form_data['your-lastname-eng'] ?? ''),
+            'Email' => $email,
+            'MobileNumber' => sanitize_text_field($form_data['your-tel-eng'] ?? ''),
+            'Address' => sanitize_text_field($form_data['your-address-eng'] ?? ''),
+            'City' => sanitize_text_field($form_data['your-city-eng'] ?? ''),
+            'Application' => sanitize_textarea_field($form_data['your-message-eng'] ?? ''),
+            'IsActive' => true,
+            'Name' => sanitize_text_field($form_data['your-lastname-eng'] ?? '') . ', ' . sanitize_text_field($form_data['your-firstname-eng'] ?? ''),
+            'Created' => $applicantCreated,
+            'Modified' => get_current_time_iso8601(),
+        ];
+
+        // Conditionally add the Photo field
+        if (isset($form_data['your-photo-engcfdb7_file']) && !empty($form_data['your-photo-engcfdb7_file'])) {
+            $photo_filepath = $cfdb7_dirname . '/' . basename($form_data['your-photo-engcfdb7_file']);
+            if (file_exists($photo_filepath)) {
+                $data['Photo'] = [
+                    'Name' => basename($form_data['your-photo-engcfdb7_file']),
+                    'DataType' => get_mime_type($photo_filepath),
+                    'DataSize' => filesize($photo_filepath),
+                    'Base64Data' => encode_file_to_base64($photo_filepath)
+                ];
+            }
+        }
+
+        // Conditionally add the ApplicationDocument field
+        if (isset($form_data['your-application-engcfdb7_file']) && !empty($form_data['your-application-engcfdb7_file'])) {
+            $application_filepath = $cfdb7_dirname . '/' . basename($form_data['your-application-engcfdb7_file']);
+            if (file_exists($application_filepath)) {
+                $data['ApplicationDocument'] = [
+                    'Name' => basename($form_data['your-application-engcfdb7_file']),
+                    'DataType' => get_mime_type($application_filepath),
+                    'Base64Data' => encode_file_to_base64($application_filepath)
+                ];
+            }
+        }
+
+        // Conditionally add the CVDocument1 field
+        if (isset($form_data['your-cv-engcfdb7_file']) && !empty($form_data['your-cv-engcfdb7_file'])) {
+            $cv_filepath = $cfdb7_dirname . '/' . basename($form_data['your-cv-engcfdb7_file']);
+            if (file_exists($cv_filepath)) {
+                $data['CVDocument1'] = [
+                    'Name' => basename($form_data['your-cv-engcfdb7_file']),
+                    'DataType' => get_mime_type($cv_filepath),
+                    'Base64Data' => encode_file_to_base64($cv_filepath)
+                ];
+            }
         }
     }
 
