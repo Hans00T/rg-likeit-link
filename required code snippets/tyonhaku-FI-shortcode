@@ -10,24 +10,24 @@
 
 <div class="content-column single_div">
     <div>
-        [textarea your-message placeholder "Vapaa hakemus"]
+        [textarea your-message maxlength:5000 placeholder "Vapaa hakemus"]
     </div>
 </div>
 
 <div class="content-column one_third">
     <div style="padding:0;">
-        <p class="form-file-p">CV</p>
+        <p class="form-file-p">CV (vain .pdf -muodossa)</p>
         <div class="custom-file-input">
-            [file your-cv id:your-cv class:file-input filetypes:doc|docx|pdf]
+            [file your-cv id:your-cv class:file-input filetypes:pdf]
             <label for="your-cv" class="custom-file-label">Lisää CV</label>
         </div>
     </div>
 </div>
 <div class="content-column one_third">
     <div style="padding:0;">
-        <p class="form-file-p">Hakemus</p>
+        <p class="form-file-p">Hakemus (vain .pdf -muodossa)</p>
         <div class="custom-file-input">
-            [file your-application id:your-application class:file-input filetypes:doc|docx|pdf]
+            [file your-application id:your-application class:file-input filetypes:pdf]
             <label for="your-application" class="custom-file-label">Lisää hakemuskirje</label>
         </div>
     </div>

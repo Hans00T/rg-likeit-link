@@ -9,7 +9,7 @@ This project is a plugin made specifically to be used with WordPress to forward 
 - WordPress site
 - Required plugins: <strong>Contact Form 7, Contact Form CFDB7, WPCode Lite</strong>
 - Optional plugins (these are not necessarily required but further improve the user experience): Column Shortcodes, Popup Maker
-- <strong>IMPORTANT NOTE:</strong> When creating your contact form do not name it anything other than <code>Tyonhakulomake</code>.
+- <strong>IMPORTANT NOTE:</strong> When creating your contact form do not name it anything other than <code>Tyonhakulomake FI</code> or <code>Tyonhakulomake ENG</code>.
 - Required Environmental Variables:  
 ```
 LIKEIT_KEY= <Your Likeit API key>
@@ -33,7 +33,14 @@ define( 'name_goes_here', 'value_goes_here' );
 4. Now you can see a plugin called CF7 Form Trap installed in your plugins on the website. Activate it if it is not activated by default.
 
 ### Configuration
-- Contact Form 7 base form (<strong>NOTE:</strong> DO NOT change the names of the fields): <code>/required code snippets/tyonhaku-shortcode</code>
+- Contact Form 7 base forms (<strong>NOTE:</strong> DO NOT change the names of the fields): <code>/required code snippets/tyonhaku-FI-shortcode</code> & <code>/required code snippets/tyonhaku-ENG-shortcode</code>
 - <strong>NOTE:</strong> remember to include <code>skip_mail: on</code> in the Additional settings (lisäasetukset) section/tab of your form. Otherwise an email will be sent.
-- In WPCode Lite add these two JavaScript code snippets: <code>/required code snippets/apply-button-functionality.js</code> & <code>/required code snippets/update-file-input-labels.js</code>
+- Create a popup if it does not exists. In the popup editor paste the code from <code>/required code snippets/TyonhakuPopup.html</code>
+- In WPCode Lite add these JavaScript code snippets: <code>/required code snippets/apply-button-functionality.js</code> (insert method: shortcode), <code>/required code snippets/update-file-input-labels.js</code> (insert method: auto insert -> sitewide footer) & <code>/required code snippets/FormLanguageSwitch.js</code> (insert method: shortcode)
 - In the custom css of the WordPress site add the code from <code>/required code snippets/page-custom-css.css</code>
+
+<br><br>
+<hr>
+<br>
+
+![Rekry Group Logo](https://www.rekrygroup.fi/wp-content/uploads/logo6.png)
