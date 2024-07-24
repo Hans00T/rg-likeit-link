@@ -19,7 +19,7 @@ PATH_START= <Either '/rekrygrouptest/api' or '/api'. Exists for easier intergrat
 The variables above are not included in this repository for security reasons.
 
 ### Limitations
-- CF7 job application form (Tyonhakulomake) fields should <strong>NOT BE EDITED</strong>. Changing the names of the fields will cause issues. Also any new fields added will not be recognized by this plugin. This is due to the way this plugin is created. It only expects to receive data that is expected by the Likeit API.
+- CF7 job application form (Tyonhakulomake) fields should <strong>NOT BE EDITED</strong>. Changing the names of the fields will cause issues. Also any new fields added will not be recognized by this plugin. This is due to the way this plugin and the LikeIT API is built. It only expects to receive data in a specific format.
 - This plugin is not to be used in any other use case than forwarding Rekry Group job application data from Wordpress to Likeit. Likeit API differs from company to company and therefore this solution cannot be used to link form submission to other APIs.
 
 ## Usage
